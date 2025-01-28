@@ -31,6 +31,6 @@ class StatsCard extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().shimmer(delay: 400.ms);
+    );
   }
 }

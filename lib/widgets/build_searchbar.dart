@@ -22,5 +22,5 @@ Widget buildSearchBar(BuildContext context, DashboardProvider provider) {
         ),
       ),
     ],
-  ).animate().shimmer(delay: 400.ms);
+  );
 }

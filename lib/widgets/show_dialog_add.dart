@@ -88,7 +88,7 @@ void showAddDataDialog(BuildContext context) {
             ],
           ),
         ),
-      ).animate().move(delay: 300.ms);
+      );
     },
   );
 }

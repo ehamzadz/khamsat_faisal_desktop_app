@@ -117,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
           builder: (context, provider, child) {
             if (provider.isLoading) {
               return Center(
-                child: CircularProgressIndicator().animate().fadeIn(),
+                child: CircularProgressIndicator(),
               );
             }
 

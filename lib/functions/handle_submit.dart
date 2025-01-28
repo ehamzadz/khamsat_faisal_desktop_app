@@ -18,10 +18,11 @@ Future<void> handleSubmit(
         Provider.of<DashboardProvider>(context, listen: false).fetchData();
         Navigator.pop(context);
       } else {
-        showErrorSnackbar(context, 'فشل في إضافة البيانات');
+        showErrorSnackbar(
+            context, 'فشل في إضافة البيانات', Colors.red.shade400);
       }
     } catch (e) {
-      showErrorSnackbar(context, 'فشل في إضافة البيانات');
+      showErrorSnackbar(context, 'فشل في إضافة البيانات', Colors.red.shade400);
     }
   }
 }

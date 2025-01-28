@@ -126,6 +126,9 @@ class ShowEditonfirmationDialog extends StatelessWidget {
                           );
 
                           if (isUpdated) {
+                            // Provider.of<DashboardProvider>(context,
+                            //         listen: false)
+                            // .refresh();
                             Provider.of<DashboardProvider>(context,
                                     listen: false)
                                 .fetchData();
@@ -133,48 +136,16 @@ class ShowEditonfirmationDialog extends StatelessWidget {
                                     listen: false)
                                 .selectedStatusFilter = "جميع";
                             Navigator.pop(context); // Close the dialog
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('تم التعديل بنجاح')),
-                            );
+                            showErrorSnackbar(context, 'تم التعديل بنجاح',
+                                Colors.green.shade400);
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      'فشل التعديل، يرجى المحاولة مرة أخرى')),
-                            );
+                            showErrorSnackbar(
+                                context,
+                                'فشل التعديل، يرجى المحاولة مرة أخرى',
+                                Colors.red.shade400);
                           }
                         }
                       },
-                      // onPressed: () async {
-                      //   if (_formKey.currentState!.validate()) {
-                      //     // Call the update function
-                      //     bool isUpdated = await ApiService().updateDataViaAPI(
-                      //       selectedItem[
-                      //           'مفتاح']!, // Pass the ID of the selected item
-                      //       updatedData,
-                      //     );
-
-                      //     if (isUpdated) {
-                      //       Provider.of<DashboardProvider>(context,
-                      //               listen: false)
-                      //           .fetchData();
-                      //       Provider.of<DashboardProvider>(context,
-                      //               listen: false)
-                      //           .selectedStatusFilter = "جميع";
-                      //       // Provider.of<DashboardProvider>(context, listen: false).filterTable();
-                      //       Navigator.pop(context); // Close the dialog
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //         SnackBar(content: Text('تم التعديل بنجاح')),
-                      //       );
-                      //     } else {
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //         SnackBar(
-                      //             content: Text(
-                      //                 'فشل التعديل، يرجى المحاولة مرة أخرى')),
-                      //       );
-                      //     }
-                      //   }
-                      // },
                       label: "حفظ التعديلات",
                       color: Colors.blue.shade50,
                       textColor: Colors.blue.shade700,
@@ -184,7 +155,7 @@ class ShowEditonfirmationDialog extends StatelessWidget {
               ],
             ),
           ),
-        ).animate().move(delay: 300.ms);
+        );
       },
     );
   }

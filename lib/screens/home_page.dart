@@ -37,7 +37,21 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('لوحة التحكم'),
+        title: Row(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 20.0, // Adjust the size of the avatar as needed
+                  backgroundImage:
+                      AssetImage('assets/logo.png'), // Add your image here
+                ),
+                SizedBox(width: 10), // Space between the image and text
+                Text('الشركة المتحدة العربية'),
+              ],
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),
@@ -77,16 +91,12 @@ class _DashboardPageState extends State<DashboardPage> {
           builder: (context, provider, child) {
             if (provider.isLoading) {
               return Center(
-                child: CircularProgressIndicator()
-                    .animate()
-                    .shimmer(delay: 400.ms),
+                child: CircularProgressIndicator(),
               );
             }
 
             // if (provider.tableData.isEmpty) {
-            //   return Center(
-            //     child: Text('لا توجد بيانات متاحة').animate().fadeIn(),
-            //   );
+            //   return noDataPanel();
             // }
 
             return Padding(
@@ -141,7 +151,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               ),
                             ),
-                          ).animate().shimmer(delay: 400.ms),
+                          ),
                         ),
                         Expanded(child: Container()),
                         InkWell(
@@ -175,7 +185,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ],
                               ),
                             ),
-                          ).animate().shimmer(delay: 400.ms),
+                          ),
                         ),
                         InkWell(
                           onTap: () {
@@ -208,7 +218,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ],
                               ),
                             ),
-                          ).animate().shimmer(delay: 400.ms),
+                          ),
                         ),
                       ],
                     ),
@@ -219,14 +229,15 @@ class _DashboardPageState extends State<DashboardPage> {
                       SizedBox(height: 20),
                       buildSearchBar(context, provider),
                       SizedBox(height: 20),
-                      Expanded(
-                          child: Container(
-                              child: DataGridWidget(
-                                  dataSource: provider.itemDataGridSource))),
-                      // SizedBox(height: 20),
-                      // _buildPagination(provider),
+                      if (!provider.tableData.isEmpty)
+                        Expanded(
+                            child: Container(
+                                child: DataGridWidget(
+                                    dataSource: provider.itemDataGridSource)))
+                      else
+                        noDataPanel(),
                       SizedBox(height: 20),
-                      buildFooter(context),
+                      // buildFooter(context),
                     ],
                   ),
                 ],
@@ -235,39 +246,90 @@ class _DashboardPageState extends State<DashboardPage> {
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // context.read<DashboardProvider>().fetchData();
-
-      //     showAddDataDialog(context); // Open the add data dialog
-      //   },
-      //   child: Icon(Icons.add),
-      // ).animate().scale(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: HiddenFooter(), // Add the hidden footer
     );
   }
+}
 
-  // Widget _buildPagination(DashboardProvider provider) {
-  //   final totalPages = provider.totalPages;
+class noDataPanel extends StatelessWidget {
+  const noDataPanel({
+    super.key,
+  });
 
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     children: [
-  //       IconButton(
-  //         icon: Icon(Icons.arrow_back),
-  //         onPressed: provider.currentPage > 1
-  //             ? () => provider.goToPage(provider.currentPage - 1)
-  //             : null,
-  //       ),
-  //       Text("الصفحة ${provider.currentPage} من $totalPages"),
-  //       IconButton(
-  //         icon: Icon(Icons.arrow_forward),
-  //         onPressed: provider.currentPage < totalPages
-  //             ? () => provider.goToPage(provider.currentPage + 1)
-  //             : null,
-  //       ),
-  //     ],
-  //   ).animate().fadeIn(delay: 300.ms);
-  // }
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+      ),
+      child: Container(
+        height: MediaQuery.of(context).size.height - 392,
+        padding: const EdgeInsets.all(32),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.inventory_2_outlined,
+                  size: 72,
+                  color: Colors.blue,
+                ),
+              )
+                  .animate()
+                  .fadeIn()
+                  .scale(duration: const Duration(milliseconds: 400)),
+              const SizedBox(height: 24),
+              Text(
+                'لا توجد بيانات متاحة',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                  height: 1.2,
+                ),
+              )
+                  .animate()
+                  .fadeIn(delay: const Duration(milliseconds: 200))
+                  .slideY(
+                      begin: 0.3, duration: const Duration(milliseconds: 400)),
+              const SizedBox(height: 12),
+              Text(
+                'سيتم عرض البيانات هنا عند توفرها',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                  height: 1.5,
+                ),
+              )
+                  .animate()
+                  .fadeIn(delay: const Duration(milliseconds: 400))
+                  .slideY(
+                      begin: 0.3, duration: const Duration(milliseconds: 400)),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class DataGridWidget extends StatelessWidget {
@@ -358,7 +420,7 @@ class DataGridWidget extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().shimmer(delay: 400.ms);
+    );
   }
 }
 
@@ -391,11 +453,11 @@ class ItemDataGridSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _items;
 
-  void _handleEdit(Map<String, String> item) {
-    // Handle edit action
-    print('Edit item: ${item['مفتاح']}');
-    // You can open a dialog or navigate to an edit screen here
-  }
+  // void _handleEdit(Map<String, String> item) {
+  //   // Handle edit action
+  //   print('Edit item: ${item['مفتاح']}');
+  //   // You can open a dialog or navigate to an edit screen here
+  // }
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
@@ -521,12 +583,12 @@ class ItemDataGridSource extends DataGridSource {
 }
 
 class DashboardProvider with ChangeNotifier {
+  String selectedStatusFilter = "جميع";
   final ApiService _apiService = ApiService();
   List<Map<String, String>> tableData = [];
   bool isLoading = false;
   late ItemDataGridSource itemDataGridSource;
   TextEditingController searchController = TextEditingController();
-  String selectedStatusFilter = "جميع";
   String selectedBeneficiaryFilter = "جميع";
   int currentPage = 1;
   final int itemsPerPage = 10;
@@ -535,6 +597,12 @@ class DashboardProvider with ChangeNotifier {
 
   DashboardProvider() {
     itemDataGridSource = ItemDataGridSource(tableData: tableData);
+  }
+
+  // Function to update selectedStatusFilter
+  void updateSelectedStatusFilter(String newStatus) {
+    selectedStatusFilter = newStatus;
+    notifyListeners(); // Notify listeners to rebuild the UI
   }
 
   Future<void> fetchData() async {
@@ -772,9 +840,21 @@ class DashboardProvider with ChangeNotifier {
   }
 
   void addData(Map<String, String> newData) {
-    tableData.add(newData); // Add the new data to the list
-    itemDataGridSource =
-        ItemDataGridSource(tableData: tableData); // Update the data source
-    notifyListeners(); // Notify listeners to update the UI
+    tableData.add(newData);
+    itemDataGridSource = ItemDataGridSource(tableData: tableData);
+    notifyListeners();
+  }
+
+  void refresh(Map<String, String> newData) {
+    tableData.remove(newData); // Modify condition as needed
+    itemDataGridSource = ItemDataGridSource(tableData: tableData);
+    notifyListeners();
+  }
+
+  void deleteData(Map<String, String> newData) {
+    tableData.remove(newData); // Modify condition as needed
+
+    itemDataGridSource = ItemDataGridSource(tableData: tableData);
+    notifyListeners();
   }
 }
