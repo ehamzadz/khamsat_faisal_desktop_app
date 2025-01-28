@@ -63,4 +63,66 @@ class ApiService {
       return false;
     }
   }
+
+  Future<bool> updateDataViaAPI(String id, Map<String, String> data) async {
+    final url = Uri.parse('http://${SERVER}/backend/update_data.php');
+
+    try {
+      // Include the ID in the data to be updated
+      data['id'] = id;
+
+      // Debug: Print the data being sent
+      print('Data being sent to API: $data');
+
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(data),
+      );
+
+      print('API Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        // Data updated successfully
+        return true;
+      } else {
+        // Handle API errors
+        print('API Error: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      // Handle network errors
+      print('Network Error: $e');
+      return false;
+    }
+  }
+
+  // Function to delete data via PHP API
+  Future<bool> deleteDataViaAPI(String id) async {
+    final url = Uri.parse(
+        'http://${SERVER}/backend/delete_data.php'); // Replace with your PHP API URL
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'id': id}),
+      );
+
+      print('==============: ${response.body}');
+
+      if (response.statusCode == 200) {
+        // Data deleted successfully
+        return true;
+      } else {
+        // Handle API errors
+        print('API Error: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      // Handle network errors
+      print('Network Error: $e');
+      return false;
+    }
+  }
 }

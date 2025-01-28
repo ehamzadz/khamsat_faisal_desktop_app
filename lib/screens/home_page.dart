@@ -1,19 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../services/api_service_materials.dart'; // For animations
+import '../services/api_service_materials.dart';
+import '../widgets/build_footer.dart';
+import '../widgets/build_searchbar.dart';
+import '../widgets/build_stats_card.dart';
+import '../widgets/show_delete_confirmation_dialog.dart';
+import '../widgets/show_dialog_add.dart';
+import '../widgets/show_edit_confirmation_dialog.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -214,9 +215,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                   Column(
                     children: <Widget>[
-                      _buildStatsCards(provider),
+                      buildStatsCards(provider),
                       SizedBox(height: 20),
-                      _buildSearchBar(provider),
+                      buildSearchBar(context, provider),
                       SizedBox(height: 20),
                       Expanded(
                           child: Container(
@@ -225,7 +226,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       // SizedBox(height: 20),
                       // _buildPagination(provider),
                       SizedBox(height: 20),
-                      _buildFooter(),
+                      buildFooter(context),
                     ],
                   ),
                 ],
@@ -243,43 +244,6 @@ class _DashboardPageState extends State<DashboardPage> {
       //   child: Icon(Icons.add),
       // ).animate().scale(),
     );
-  }
-
-  Widget _buildStatsCards(DashboardProvider provider) {
-    final stats = provider.getStats();
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: stats.map((stat) {
-        return StatsCard(
-          title: stat["title"] as String,
-          value: stat["value"] as String,
-          icon: stat["icon"] as IconData,
-        ).animate().shimmer(delay: 400.ms);
-      }).toList(),
-    );
-  }
-
-  Widget _buildSearchBar(DashboardProvider provider) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: provider.searchController,
-            decoration: InputDecoration(
-              hintText: "ابحث عن مادة...",
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              filled: true,
-              fillColor: Theme.of(context).colorScheme.surfaceContainer,
-            ),
-            onChanged: (value) => provider.filterTable(),
-          ),
-        ),
-      ],
-    ).animate().shimmer(delay: 400.ms);
   }
 
   // Widget _buildPagination(DashboardProvider provider) {
@@ -304,84 +268,6 @@ class _DashboardPageState extends State<DashboardPage> {
   //     ],
   //   ).animate().fadeIn(delay: 300.ms);
   // }
-
-  Widget _buildFooter() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              child: Text("©eHamzaDZ"),
-              onTap: () async {
-                final whatsappUrl = "https://wa.me/+213672138811";
-
-                // Check if the platform is a desktop (Windows, macOS, Linux)
-                if (Platform.isWindows ||
-                    Platform.isMacOS ||
-                    Platform.isLinux) {
-                  try {
-                    // Open the URL in the browser using Process.start for desktop platforms
-                    await Process.start('cmd', ['/c', 'start', whatsappUrl]);
-                  } catch (e) {
-                    print("Could not launch URL on desktop: $e");
-                  }
-                } else {
-                  // Use url_launcher on mobile devices
-                  final uri = Uri.parse(whatsappUrl);
-                  if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri);
-                  } else {
-                    throw 'Could not launch $whatsappUrl';
-                  }
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    ).animate().shimmer(delay: 400.ms);
-  }
-}
-
-class StatsCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-
-  const StatsCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Icon(icon, size: 40, color: Theme.of(context).colorScheme.primary),
-            SizedBox(height: 10),
-            Text(value,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text(title, style: TextStyle(fontSize: 14, color: Colors.grey)),
-          ],
-        ),
-      ),
-    ).animate().shimmer(delay: 400.ms);
-  }
 }
 
 class DataGridWidget extends StatelessWidget {
@@ -507,14 +393,8 @@ class ItemDataGridSource extends DataGridSource {
 
   void _handleEdit(Map<String, String> item) {
     // Handle edit action
-    print('Edit item: ${item['اسم المادة']}');
+    print('Edit item: ${item['مفتاح']}');
     // You can open a dialog or navigate to an edit screen here
-  }
-
-  void _handleDelete(Map<String, String> item) {
-    // Handle delete action
-    print('Delete item: ${item['اسم المادة']}');
-    // You can show a confirmation dialog and delete the item from the data source
   }
 
   @override
@@ -529,20 +409,20 @@ class ItemDataGridSource extends DataGridSource {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _ActionButton(
-                    icon: Icons.edit_rounded,
-                    label: 'تعديل',
-                    color: Colors.blue.shade100,
-                    iconColor: Colors.blue.shade700,
-                    onPressed: () => _handleEdit(dataGridCell.value),
+                  ShowEditonfirmationDialog(
+                    item: dataGridCell.value,
                   ),
+                  // ActionButton(
+                  //   icon: Icons.edit_rounded,
+                  //   label: 'تعديل',
+                  //   color: Colors.blue.shade100,
+                  //   iconColor: Colors.blue.shade700,
+                  //   onPressed: () =>
+                  //       showEditDataDialog(context, dataGridCell.value),
+                  // ),
                   SizedBox(width: 8),
-                  _ActionButton(
-                    icon: Icons.delete_rounded,
-                    label: 'حذف',
-                    color: Colors.red.shade50,
-                    iconColor: Colors.red.shade600,
-                    onPressed: () => _handleDelete(dataGridCell.value),
+                  ShowDeleteConfirmationDialog(
+                    item: dataGridCell.value,
                   ),
                 ],
               ),
@@ -640,56 +520,6 @@ class ItemDataGridSource extends DataGridSource {
   }
 }
 
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final Color iconColor;
-  final VoidCallback onPressed;
-
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.iconColor,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: iconColor.withOpacity(0.2)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: iconColor),
-              SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: iconColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class DashboardProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
   List<Map<String, String>> tableData = [];
@@ -714,6 +544,7 @@ class DashboardProvider with ChangeNotifier {
     try {
       tableData = await _apiService.fetchItems();
       itemDataGridSource = ItemDataGridSource(tableData: tableData);
+      print(selectedStatusFilter);
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
@@ -946,194 +777,4 @@ class DashboardProvider with ChangeNotifier {
         ItemDataGridSource(tableData: tableData); // Update the data source
     notifyListeners(); // Notify listeners to update the UI
   }
-}
-
-void showAddDataDialog(BuildContext context) {
-  final _formKey = GlobalKey<FormState>();
-  final Map<String, String> newData = {
-    'اسم المادة': '',
-    'رقم المادة': '',
-    'السيريال نمبر': '',
-    'الرقم العام': '',
-    'لصالح من': '',
-    'حالة المادة': '',
-  };
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.4,
-          padding: EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.add_circle_outline, color: Colors.blue.shade700),
-                  SizedBox(width: 12),
-                  Text(
-                    "إضافة مادة جديدة",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.blue.shade900,
-                    ),
-                  ),
-                ],
-              ),
-              Divider(height: 32),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        ...newData.keys.map((field) {
-                          if (field == 'حالة المادة') {
-                            return _buildDropdownField(field, newData);
-                          }
-                          return _buildTextField(field, newData);
-                        }).expand((widget) => [widget, SizedBox(height: 16)]),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  _DialogButton(
-                    onPressed: () => Navigator.pop(context),
-                    label: "إلغاء",
-                    color: Colors.grey.shade200,
-                    textColor: Colors.grey.shade700,
-                  ),
-                  SizedBox(width: 12),
-                  _DialogButton(
-                    onPressed: () => _handleSubmit(context, _formKey, newData),
-                    label: "حفظ",
-                    color: Colors.blue.shade50,
-                    textColor: Colors.blue.shade700,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ).animate().move(delay: 300.ms);
-    },
-  );
-}
-
-Widget _buildTextField(String label, Map<String, String> data) {
-  return TextFormField(
-    decoration: InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: Colors.grey.shade50,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade200),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.blue.shade400, width: 1.5),
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-    ),
-    validator: (value) => value?.isEmpty ?? true ? 'يرجى إدخال $label' : null,
-    onSaved: (value) => data[label] = value ?? '',
-  );
-}
-
-Widget _buildDropdownField(String label, Map<String, String> data) {
-  return DropdownButtonFormField<String>(
-    decoration: InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: Colors.grey.shade50,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade200),
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-    ),
-    items: ['تحت العمل', 'تم التحويل', 'شطبت', 'تم الانتهاء منها']
-        .map((value) => DropdownMenuItem(value: value, child: Text(value)))
-        .toList(),
-    validator: (value) => value == null ? 'يرجى اختيار حالة المادة' : null,
-    onChanged: (value) => data[label] = value ?? '',
-  );
-}
-
-class _DialogButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String label;
-  final Color color;
-  final Color textColor;
-
-  const _DialogButton({
-    required this.onPressed,
-    required this.label,
-    required this.color,
-    required this.textColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: textColor,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 0,
-      ),
-      child: Text(label,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-    );
-  }
-}
-
-Future<void> _handleSubmit(
-  BuildContext context,
-  GlobalKey<FormState> formKey,
-  Map<String, String> data,
-) async {
-  if (formKey.currentState!.validate()) {
-    formKey.currentState!.save();
-    try {
-      final success = await ApiService().insertDataViaAPI(data);
-      if (success) {
-        Provider.of<DashboardProvider>(context, listen: false).fetchData();
-        Navigator.pop(context);
-      } else {
-        _showErrorSnackbar(context);
-      }
-    } catch (e) {
-      _showErrorSnackbar(context);
-    }
-  }
-}
-
-void _showErrorSnackbar(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('فشل في إضافة البيانات'),
-      backgroundColor: Colors.red.shade400,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: EdgeInsets.all(10),
-    ),
-  );
 }
