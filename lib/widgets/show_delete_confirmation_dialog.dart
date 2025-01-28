@@ -55,11 +55,14 @@ class ShowDeleteConfirmationDialog extends StatelessWidget {
       try {
         // Attempt to delete the data via the API
 
-        await ApiService().deleteDataViaAPI(item['مفتاح']!);
-        Provider.of<DashboardProvider>(context, listen: false).fetchData();
+        // Provider.of<DashboardProvider>(context, listen: false).fetchData();
         Provider.of<DashboardProvider>(context, listen: false)
             .selectedStatusFilter = "جميع";
+        // Provider.of<DashboardProvider>(context, listen: false).fetchData();
         // Provider.of<DashboardProvider>(context, listen: false).filterTable();
+        // Provider.of<DashboardProvider>(context, listen: true);
+        await ApiService().deleteDataViaAPI(item['مفتاح']!);
+        // DashboardProvider().filterTable();
 
         // If successful, show a success SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
