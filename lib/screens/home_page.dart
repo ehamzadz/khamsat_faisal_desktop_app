@@ -526,40 +526,43 @@ class ItemDataGridSource extends DataGridSource {
                 backgroundColor = Colors.grey.shade100;
             }
 
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-              // padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: color.withOpacity(0.2),
-                    width: 1.5,
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                // padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: color.withOpacity(0.2),
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
-                        shape: BoxShape.circle,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(icon, size: 14, color: color),
                       ),
-                      child: Icon(icon, size: 14, color: color),
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
+                      SizedBox(width: 6),
+                      Text(
+                        status,
+                        style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
