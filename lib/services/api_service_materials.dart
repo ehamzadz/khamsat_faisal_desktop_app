@@ -25,6 +25,9 @@ class ApiService {
                   "الرقم العام": item["general_number"],
                   "لصالح من": item["for_who"],
                   "حالة المادة": item["status"],
+                  "تاريخ الدخول": item["created_at"],
+                  "تاريخ التحويل": item["updated_at_transfert"],
+                  "تاريخ الخروج": item["updated_at_exit"],
                 })
             .toList();
       } else {

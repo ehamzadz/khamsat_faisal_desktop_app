@@ -40,6 +40,8 @@ class ShowEditonfirmationDialog extends StatelessWidget {
     final Map<String, String> updatedData =
         Map.from(selectedItem); // Copy the selected item's data
 
+    final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
+
     showDialog(
       context: context,
       builder: (context) {
@@ -70,35 +72,38 @@ class ShowEditonfirmationDialog extends StatelessWidget {
                 Flexible(
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          ...updatedData.keys.map((field) {
-                            if (field == 'حالة المادة') {
-                              return buildDropdownFieldEditData(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            ...updatedData.keys
+                                .where((field) =>
+                                    field != 'تاريخ الخروج' &&
+                                    field != 'تاريخ التحويل' &&
+                                    field != 'تاريخ الدخول')
+                                .map((field) {
+                              if (field == 'حالة المادة') {
+                                return buildDropdownFieldEditData(
+                                  field,
+                                  updatedData,
+                                  'يرجى اختيار أحد الإختيارات',
+                                  [
+                                    'تحت العمل',
+                                    'تم التحويل',
+                                    'شطبت',
+                                    'تم الانتهاء منها'
+                                  ],
+                                  initialValue: updatedData[field] ?? '',
+                                );
+                              }
+                              return buildTextFieldEditData(
                                 field,
                                 updatedData,
-                                'يرجى اختيار أحد الإختيارات',
-                                [
-                                  'تحت العمل',
-                                  'تم التحويل',
-                                  'شطبت',
-                                  'تم الانتهاء منها'
-                                ],
-                                initialValue: updatedData[field] ??
-                                    '', // Provide a default value
+                                initialValue: updatedData[field] ?? '',
                               );
-                            }
-                            return buildTextFieldEditData(
-                              field,
-                              updatedData,
-                              initialValue: updatedData[field] ??
-                                  '', // Provide a default value
-                            );
-                          }).expand((widget) => [widget, SizedBox(height: 16)]),
-                        ],
-                      ),
-                    ),
+                            }).expand(
+                                    (widget) => [widget, SizedBox(height: 16)]),
+                          ],
+                        )),
                   ),
                 ),
                 SizedBox(height: 24),
@@ -131,18 +136,53 @@ class ShowEditonfirmationDialog extends StatelessWidget {
                             // .refresh();
                             Provider.of<DashboardProvider>(context,
                                     listen: false)
+                                .selectedStatusFilter = "جميع";
+                            Provider.of<DashboardProvider>(context,
+                                    listen: false)
                                 .fetchData();
                             Provider.of<DashboardProvider>(context,
                                     listen: false)
-                                .selectedStatusFilter = "جميع";
+                                .refresh(updatedData);
                             Navigator.pop(context); // Close the dialog
-                            showErrorSnackbar(context, 'تم التعديل بنجاح',
-                                Colors.green.shade400);
+
+                            // scaffoldMessengerKey.currentState?.showSnackBar(
+                            //   SnackBar(
+                            //     content: Text('تم التعديل بنجاح'),
+                            //     backgroundColor: Colors.green.shade400,
+                            //     behavior: SnackBarBehavior.floating,
+                            //     shape: RoundedRectangleBorder(
+                            //         borderRadius: BorderRadius.circular(10)),
+                            //     margin: EdgeInsets.all(10),
+                            //   ),
+                            // );
+                            // showErrorSnackbar(context, 'تم التعديل بنجاح',
+                            //     Colors.green.shade400);
+                            // Future.delayed(Duration.zero, () {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //       content: Text('تم التعديل بنجاح'),
+                            //       backgroundColor: Colors.green.shade400,
+                            //       behavior: SnackBarBehavior.floating,
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(10)),
+                            //       margin: EdgeInsets.all(10),
+                            //     ),
+                            //   );
+                            // });
                           } else {
-                            showErrorSnackbar(
-                                context,
-                                'فشل التعديل، يرجى المحاولة مرة أخرى',
-                                Colors.red.shade400);
+                            // Future.delayed(Duration.zero, () {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //       content: Text(
+                            //           'فشل التعديل، يرجى المحاولة مرة أخرى'),
+                            //       backgroundColor: Colors.red.shade400,
+                            //       behavior: SnackBarBehavior.floating,
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(10)),
+                            //       margin: EdgeInsets.all(10),
+                            //     ),
+                            //   );
+                            // });
                           }
                         }
                       },

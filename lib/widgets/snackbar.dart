@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
+// final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
 
 void showErrorSnackbar(BuildContext context, String message, Color color) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  scaffoldMessengerKey.currentState?.showSnackBar(
     SnackBar(
       content: Text(message),
       backgroundColor: color,

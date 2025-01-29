@@ -8,6 +8,7 @@ import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../models/variables.dart';
 import '../services/api_service_materials.dart';
 import '../widgets/build_footer.dart';
 import '../widgets/build_searchbar.dart';
@@ -344,6 +345,13 @@ class DataGridWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Theme.of(context).colorScheme.surfaceContainer,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: SfDataGrid(
         source: dataSource,
@@ -352,17 +360,32 @@ class DataGridWidget extends StatelessWidget {
         allowSorting: true,
         gridLinesVisibility: GridLinesVisibility.horizontal,
         headerGridLinesVisibility: GridLinesVisibility.horizontal,
+        headerRowHeight: 60,
+        rowHeight: 50,
+        // gridLinesColor: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+        // headerGridLinesColor:
+        //     Theme.of(context).colorScheme.surfaceContainerHighest,
         columns: [
           GridColumn(
             columnName: 'مفتاح',
+            width: 90,
             label: Container(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.symmetric(vertical: 8),
               alignment: Alignment.center,
               child: Text('مفتاح'),
             ),
           ),
           GridColumn(
+            columnName: 'تاريخ الدخول',
+            label: Container(
+              padding: EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: Text('تاريخ الدخول'),
+            ),
+          ),
+          GridColumn(
             columnName: 'حالة المادة',
+            width: 170,
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -409,8 +432,25 @@ class DataGridWidget extends StatelessWidget {
               child: Text('لصالح من'),
             ),
           ),
-          // Add a new column for actions
           GridColumn(
+            columnName: 'تاريخ التحويل',
+            label: Container(
+              padding: EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: Text('تاريخ التحويل'),
+            ),
+          ),
+          GridColumn(
+            columnName: 'تاريخ الخروج',
+            label: Container(
+              padding: EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: Text('تاريخ الخروج'),
+            ),
+          ),
+          GridColumn(
+            width: 120,
+            allowSorting: false,
             columnName: 'الإجراءات',
             label: Container(
               padding: EdgeInsets.all(8),
@@ -430,6 +470,8 @@ class ItemDataGridSource extends DataGridSource {
         .map((data) => DataGridRow(cells: [
               DataGridCell<String>(columnName: 'مفتاح', value: data['مفتاح']!),
               DataGridCell<String>(
+                  columnName: 'تاريخ الدخول', value: data['تاريخ الدخول']!),
+              DataGridCell<String>(
                   columnName: 'حالة المادة', value: data['حالة المادة']!),
               DataGridCell<String>(
                   columnName: 'اسم المادة', value: data['اسم المادة']!),
@@ -441,7 +483,15 @@ class ItemDataGridSource extends DataGridSource {
                   columnName: 'الرقم العام', value: data['الرقم العام']!),
               DataGridCell<String>(
                   columnName: 'لصالح من', value: data['لصالح من']!),
-              // Add a new cell for actions
+              DataGridCell<String>(
+                  columnName: 'تاريخ التحويل',
+                  value: data['تاريخ التحويل']! == ''
+                      ? '/'
+                      : data['تاريخ التحويل']),
+              DataGridCell<String>(
+                  columnName: 'تاريخ الخروج',
+                  value:
+                      data['تاريخ الخروج']! == '' ? '/' : data['تاريخ الخروج']),
               DataGridCell<Map<String, String>>(
                   columnName: 'الإجراءات', value: data),
             ]))
@@ -566,8 +616,24 @@ class ItemDataGridSource extends DataGridSource {
                 ),
               ),
             );
+          } else if (dataGridCell.columnName == 'مفتاح') {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    dataGridCell.value.toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            );
           } else {
-            // Render regular cell content
             return Container(
               alignment: Alignment.center,
               padding: EdgeInsets.all(8),
