@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../variables/variables.dart';
+
 class MaterialModel {
   final int id;
   final String name;
@@ -32,7 +34,7 @@ class MaterialModel {
 }
 
 class DatabaseService {
-  static const String _baseUrl = 'http://localhost:3000';
+  static final String _baseUrl = 'http://$SERVER:3000';
 
   // Fetch all materials
   static Future<List<MaterialModel>> getMaterials() async {
