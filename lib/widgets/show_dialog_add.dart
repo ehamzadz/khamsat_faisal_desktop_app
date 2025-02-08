@@ -9,12 +9,15 @@ import 'dialog_button.dart';
 void showAddDataDialog(BuildContext context) {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> newData = {
-    'اسم المادة': '',
-    'رقم المادة': '',
-    'السيريال نمبر': '',
-    'الرقم العام': '',
-    'لصالح من': '',
-    'حالة المادة': '',
+    'material_name': '',
+    'number': '',
+    'serial_number': '',
+    'general_number': '',
+    'for_who': '',
+    'status': '',
+    'created_at': '',
+    'updated_at_transfert': '',
+    'updated_at_exit': '',
   };
 
   showDialog(
@@ -50,7 +53,7 @@ void showAddDataDialog(BuildContext context) {
                     child: Column(
                       children: [
                         ...newData.keys.map((field) {
-                          if (field == 'حالة المادة') {
+                          if (field == 'status') {
                             return buildDropdownField(
                                 field, newData, 'يرجى اختيار أحد الإختيارات', [
                               'تحت العمل',
@@ -58,6 +61,11 @@ void showAddDataDialog(BuildContext context) {
                               'شطبت',
                               'تم الانتهاء منها'
                             ]);
+                          }
+                          if (field == 'created_at' ||
+                              field == 'updated_at_transfert' ||
+                              field == 'updated_at_exit') {
+                            return SizedBox();
                           }
                           return buildTextField(field, newData);
                         }).expand((widget) => [widget, SizedBox(height: 16)]),

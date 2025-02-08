@@ -63,8 +63,7 @@ class ShowDeleteConfirmationDialog extends StatelessWidget {
         // Provider.of<DashboardProvider>(context, listen: false).filterTable();
         // Provider.of<DashboardProvider>(context, listen: true);
         // Provider.of<DashboardProvider>(context, listen: false).filterTable();
-
-        await ApiService().deleteDataViaAPI(item['مفتاح']!);
+        await DatabaseService().deleteItem(item['id']!);
 
         Provider.of<DashboardProvider>(context, listen: false).deleteData(item);
         // If successful, show a success SnackBar
@@ -74,7 +73,7 @@ class ShowDeleteConfirmationDialog extends StatelessWidget {
             backgroundColor: Colors.green,
           ),
         );
-        print('Deleting item: ${item['مفتاح']}');
+        print('Deleting item: ${item['id']}');
       } catch (error) {
         showErrorSnackbar(
             context, 'حدث خطأ أثناء محاولة الحذف: $error', Colors.red.shade400);

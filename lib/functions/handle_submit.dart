@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +15,9 @@ Future<void> handleSubmit(
   if (formKey.currentState!.validate()) {
     formKey.currentState!.save();
     try {
-      final success = await ApiService().insertDataViaAPI(data);
+      final success = await DatabaseService().insertItem(data);
+      print(success);
+
       if (success) {
         Provider.of<DashboardProvider>(context, listen: false).fetchData();
         Navigator.pop(context);

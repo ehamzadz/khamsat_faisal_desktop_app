@@ -77,11 +77,11 @@ class ShowEditonfirmationDialog extends StatelessWidget {
                           children: [
                             ...updatedData.keys
                                 .where((field) =>
-                                    field != 'تاريخ الخروج' &&
-                                    field != 'تاريخ التحويل' &&
-                                    field != 'تاريخ الدخول')
+                                    field != 'updated_at_exit' &&
+                                    field != 'updated_at_transfert' &&
+                                    field != 'created_at')
                                 .map((field) {
-                              if (field == 'حالة المادة') {
+                              if (field == 'status') {
                                 return buildDropdownFieldEditData(
                                   field,
                                   updatedData,
@@ -124,11 +124,11 @@ class ShowEditonfirmationDialog extends StatelessWidget {
                           print('Updated Data: $updatedData');
 
                           // Call the update function
-                          bool isUpdated = await ApiService().updateDataViaAPI(
+                          bool isUpdated = (await DatabaseService().updateItem(
                             selectedItem[
-                                'مفتاح']!, // Pass the ID of the selected item
+                                'id']!, // Pass the ID of the selected item
                             updatedData,
-                          );
+                          ));
 
                           if (isUpdated) {
                             // Provider.of<DashboardProvider>(context,

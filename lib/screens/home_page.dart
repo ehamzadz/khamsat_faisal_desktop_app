@@ -367,7 +367,7 @@ class DataGridWidget extends StatelessWidget {
         //     Theme.of(context).colorScheme.surfaceContainerHighest,
         columns: [
           GridColumn(
-            columnName: 'مفتاح',
+            columnName: 'id',
             width: 90,
             label: Container(
               padding: EdgeInsets.symmetric(vertical: 8),
@@ -376,7 +376,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'تاريخ الدخول',
+            columnName: 'created_at',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -384,7 +384,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'حالة المادة',
+            columnName: 'status',
             width: 170,
             label: Container(
               padding: EdgeInsets.all(8),
@@ -393,7 +393,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'اسم المادة',
+            columnName: 'material_name',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -401,7 +401,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'رقم المادة',
+            columnName: 'number',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -409,7 +409,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'السيريال نمبر',
+            columnName: 'serial_number',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -417,7 +417,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'الرقم العام',
+            columnName: 'general_number',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -425,7 +425,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'لصالح من',
+            columnName: 'for_who',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -433,7 +433,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'تاريخ التحويل',
+            columnName: 'updated_at_transfert',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -441,7 +441,7 @@ class DataGridWidget extends StatelessWidget {
             ),
           ),
           GridColumn(
-            columnName: 'تاريخ الخروج',
+            columnName: 'updated_at_exit',
             label: Container(
               padding: EdgeInsets.all(8),
               alignment: Alignment.center,
@@ -468,30 +468,31 @@ class ItemDataGridSource extends DataGridSource {
   ItemDataGridSource({required List<Map<String, String>> tableData}) {
     _items = tableData
         .map((data) => DataGridRow(cells: [
-              DataGridCell<String>(columnName: 'مفتاح', value: data['مفتاح']!),
+              DataGridCell<String>(columnName: 'id', value: data['id']!),
               DataGridCell<String>(
-                  columnName: 'تاريخ الدخول', value: data['تاريخ الدخول']!),
+                  columnName: 'created_at', value: data['created_at']!),
               DataGridCell<String>(
-                  columnName: 'حالة المادة', value: data['حالة المادة']!),
+                  columnName: 'status', value: data['status']!),
               DataGridCell<String>(
-                  columnName: 'اسم المادة', value: data['اسم المادة']!),
+                  columnName: 'material_name', value: data['material_name']!),
               DataGridCell<String>(
-                  columnName: 'رقم المادة', value: data['رقم المادة']!),
+                  columnName: 'number', value: data['number']!),
               DataGridCell<String>(
-                  columnName: 'السيريال نمبر', value: data['السيريال نمبر']!),
+                  columnName: 'serial_number', value: data['serial_number']!),
               DataGridCell<String>(
-                  columnName: 'الرقم العام', value: data['الرقم العام']!),
+                  columnName: 'general_number', value: data['general_number']!),
               DataGridCell<String>(
-                  columnName: 'لصالح من', value: data['لصالح من']!),
+                  columnName: 'for_who', value: data['for_who']!),
               DataGridCell<String>(
-                  columnName: 'تاريخ التحويل',
-                  value: data['تاريخ التحويل']! == ''
+                  columnName: 'updated_at_transfert',
+                  value: data['updated_at_transfert']! == ''
                       ? '/'
-                      : data['تاريخ التحويل']),
+                      : data['updated_at_transfert']),
               DataGridCell<String>(
-                  columnName: 'تاريخ الخروج',
-                  value:
-                      data['تاريخ الخروج']! == '' ? '/' : data['تاريخ الخروج']),
+                  columnName: 'updated_at_exit',
+                  value: data['updated_at_exit']! == ''
+                      ? '/'
+                      : data['updated_at_exit']),
               DataGridCell<Map<String, String>>(
                   columnName: 'الإجراءات', value: data),
             ]))
@@ -505,7 +506,7 @@ class ItemDataGridSource extends DataGridSource {
 
   // void _handleEdit(Map<String, String> item) {
   //   // Handle edit action
-  //   print('Edit item: ${item['مفتاح']}');
+  //   print('Edit item: ${item['id']}');
   //   // You can open a dialog or navigate to an edit screen here
   // }
 
@@ -541,7 +542,7 @@ class ItemDataGridSource extends DataGridSource {
             ),
           );
         } else {
-          if (dataGridCell.columnName == 'حالة المادة') {
+          if (dataGridCell.columnName == 'status') {
             // Customize the text based on the status
             final status = dataGridCell.value.toString();
             IconData icon;
@@ -616,7 +617,7 @@ class ItemDataGridSource extends DataGridSource {
                 ),
               ),
             );
-          } else if (dataGridCell.columnName == 'مفتاح') {
+          } else if (dataGridCell.columnName == 'id') {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -653,7 +654,6 @@ class ItemDataGridSource extends DataGridSource {
 
 class DashboardProvider with ChangeNotifier {
   String selectedStatusFilter = "جميع";
-  final ApiService _apiService = ApiService();
   List<Map<String, String>> tableData = [];
   bool isLoading = false;
   late ItemDataGridSource itemDataGridSource;
@@ -671,7 +671,7 @@ class DashboardProvider with ChangeNotifier {
   // Function to update selectedStatusFilter
   void updateSelectedStatusFilter(String newStatus) {
     selectedStatusFilter = newStatus;
-    notifyListeners(); // Notify listeners to rebuild the UI
+    notifyListeners();
   }
 
   Future<void> fetchData() async {
@@ -679,7 +679,12 @@ class DashboardProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      tableData = await _apiService.fetchItems();
+      final DatabaseService dbService = DatabaseService();
+      List<Map<String, dynamic>> rawData = await dbService.fetchItems();
+
+      tableData = rawData.map((item) {
+        return item.map((key, value) => MapEntry(key, value?.toString() ?? ''));
+      }).toList();
       itemDataGridSource = ItemDataGridSource(tableData: tableData);
       print(selectedStatusFilter);
     } catch (e) {
@@ -740,7 +745,7 @@ class DashboardProvider with ChangeNotifier {
       {
         "title": "تحت العمل",
         "value": tableData
-            .where((item) => item["حالة المادة"] == "تحت العمل")
+            .where((item) => item["status"] == "تحت العمل")
             .length
             .toString(),
         "icon": Icons.construction
@@ -748,7 +753,7 @@ class DashboardProvider with ChangeNotifier {
       {
         "title": "تم التحويل",
         "value": tableData
-            .where((item) => item["حالة المادة"] == "تم التحويل")
+            .where((item) => item["status"] == "تم التحويل")
             .length
             .toString(),
         "icon": Icons.swap_horiz
@@ -756,7 +761,7 @@ class DashboardProvider with ChangeNotifier {
       {
         "title": "شطبت",
         "value": tableData
-            .where((item) => item["حالة المادة"] == "شطبت")
+            .where((item) => item["status"] == "شطبت")
             .length
             .toString(),
         "icon": Icons.delete_forever
@@ -764,7 +769,7 @@ class DashboardProvider with ChangeNotifier {
       {
         "title": "تم الانتهاء منها",
         "value": tableData
-            .where((item) => item["حالة المادة"] == "تم الانتهاء منها")
+            .where((item) => item["status"] == "تم الانتهاء منها")
             .length
             .toString(),
         "icon": Icons.check_circle_outline
@@ -849,8 +854,7 @@ class DashboardProvider with ChangeNotifier {
                   fetchData();
                 } else {
                   tableData = tableData
-                      .where(
-                          (item) => item["حالة المادة"] == selectedStatusFilter)
+                      .where((item) => item["status"] == selectedStatusFilter)
                       .toList();
 
                   // Update the data source
@@ -895,7 +899,7 @@ class DashboardProvider with ChangeNotifier {
         throw Exception("Could not access downloads directory.");
       }
 
-      final file = File('${directory.path}/data.csv');
+      final file = File('${directory.path}\\data.csv');
       await file.writeAsBytes(csvBytes);
 
       ScaffoldMessenger.of(context).showSnackBar(
